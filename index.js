@@ -1,42 +1,58 @@
 require("dotenv").config();
 
+// IMPORTAÇÕES
 const { Client, GatewayIntentBits, EmbedBuilder } = require("discord.js");
+const cron = require("node-cron");
 
 
+// CRIA O BOT
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds
   ]
 });
 
-client.once("ready", async () => {
+
+// QUANDO O BOT LIGAR
+client.once("clientReady", () => {
   console.log(`Bot online: ${client.user.tag}`);
-
-  const canal = await client.channels.fetch(process.env.CHANNEL_ID);
-
-  if (canal) {
-    const { EmbedBuilder } = require("discord.js");
-
-const regras = new EmbedBuilder()
-.setColor("Red")
-.setTitle("📜 Regras do Servidor")
-.setDescription(`
-・Respeitar todos que estão no servidor.
-・Não pratique spam ou flood de mensagens.
-・Utilizar os canais de forma adequada.
-・Não enviar conteúdo ilegal ofensivo e/ou explícito.
-・Não compartilhar informações sem consentimento.
-・Proibido qualquer tipo de preconceito.
-・Proibido discussões políticas e religiosas.
-・Proibido o uso de contas secundárias (contas alt).
-・Proibido farm de XP.
-・Proibido jogar utilizando hack ou qualquer meio de vantagem.
-`)
-.setFooter({ text: "Leia as regras antes de participar!" });
-
-canal.send({ embeds: [regras] });
-
-  }
 });
 
+
+// MENSAGEM TODO DIA 18:00
+cron.schedule("0 18 * * *", async () => {
+
+  const canal = await client.channels.fetch("1529331723387801691");
+
+  const embed = new EmbedBuilder()
+    .setColor("#00ff88")
+    .setTitle("💰 Nova oportunidade no servidor!")
+    .setDescription(`
+🚀 Quer juntar uma grana enquanto se diverte?
+
+Agora você pode ajudar o servidor e ainda ganhar uma recompensa!
+
+👥 Cada convite válido:
+💵 **R$ 0,10**
+
+Chame seus amigos para participar, jogar junto e fortalecer nossa comunidade.
+
+📊 Para saber quantas pessoas você convidou:
+\`/invites\`
+
+🔥 Quanto mais amigos você trouxer, maior sua recompensa!
+    `);
+
+  canal.send({
+    content: "@everyone",
+    embeds: [embed],
+    allowedMentions: {
+      parse: ["everyone"]
+    }
+  });
+
+});
+
+
+// LOGIN DO BOT
 client.login(process.env.TOKEN);
