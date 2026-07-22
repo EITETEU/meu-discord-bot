@@ -1,9 +1,9 @@
 require("dotenv").config();
 
-const { 
-    Client, 
-    GatewayIntentBits, 
-    EmbedBuilder 
+const {
+    Client,
+    GatewayIntentBits,
+    EmbedBuilder
 } = require("discord.js");
 
 const cron = require("node-cron");
@@ -16,34 +16,36 @@ const client = new Client({
 });
 
 
-// Guarda a última mensagem enviada
 let ultimaMensagem = null;
 
 
-// Quando o bot ligar
+// Bot conectado
 client.once("clientReady", () => {
     console.log(`Bot online: ${client.user.tag}`);
 });
 
 
-// Mensagem automática todos os dias às 18:00
+// Envia mensagem todos os dias às 18:00
+// Para teste está a cada minuto
 cron.schedule("* * * * *", async () => {
 
     console.log("Cron executou!");
 
     try {
 
-
         const canal = await client.channels.fetch("1529331723387801691");
+
 
         // Apaga mensagem antiga
         if (ultimaMensagem) {
             try {
                 await ultimaMensagem.delete();
+                console.log("Mensagem antiga apagada!");
             } catch {
-                console.log("Mensagem antiga já foi apagada.");
+                console.log("Não consegui apagar a mensagem antiga.");
             }
         }
+
 
         const embed = new EmbedBuilder()
             .setColor("#00ff88")
@@ -75,18 +77,30 @@ aqui neste canal e acompanhe seus convites.
                 text: "Obrigado por ajudar nossa comunidade a crescer ❤️"
             });
 
+
         ultimaMensagem = await canal.send({
+
             content: "@everyone",
+
             embeds: [embed],
+
             allowedMentions: {
                 parse: ["everyone"]
             }
+
         });
 
-        console.log("Mensagem diária enviada!");
+
+        console.log("Mensagem enviada com sucesso!");
 
     } catch(error) {
+
         console.log("Erro ao enviar mensagem:", error);
+
     }
 
 });
+
+
+// Login do bot
+client.login(process.env.TOKEN);
