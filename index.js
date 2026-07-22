@@ -27,7 +27,7 @@ client.once("clientReady", () => {
 
 // Envia mensagem todos os dias às 18:00
 // Para teste está a cada minuto
-cron.schedule("* * * * *", async () => {
+cron.schedule("0 18 * * *", async () => {
 
     console.log("Cron executou!");
 
