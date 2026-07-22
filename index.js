@@ -20,7 +20,8 @@ client.once("clientReady", () => {
 
 
 // MENSAGEM TODO DIA 18:00
-cron.schedule("0 18 * * *", async () => {
+cron.schedule("* * * * *", async () => {
+
 
   const canal = await client.channels.fetch("1529331723387801691");
 
