@@ -1,60 +1,101 @@
 require("dotenv").config();
 
-// IMPORTAÇÕES
-const { Client, GatewayIntentBits, EmbedBuilder } = require("discord.js");
+const { 
+    Client, 
+    GatewayIntentBits, 
+    EmbedBuilder 
+} = require("discord.js");
+
 const cron = require("node-cron");
 
 
-// CRIA O BOT
 const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds
-  ]
+    intents: [
+        GatewayIntentBits.Guilds
+    ]
 });
 
 
-// QUANDO O BOT LIGAR
+// Guarda a última mensagem enviada
+let ultimaMensagem = null;
+
+
+// Quando o bot ligar
 client.once("clientReady", () => {
-  console.log(`Bot online: ${client.user.tag}`);
+    console.log(`Bot online: ${client.user.tag}`);
 });
 
 
-// MENSAGEM TODO DIA 18:00
-cron.schedule("0 18 * * *", async () => {
+// Mensagem automática todos os dias às 18:00
+cron.schedule("* * * * *", async () => {
+
+    try {
+
+        const canal = await client.channels.fetch(1529331723387801691);
+
+        // Apaga mensagem antiga
+        if (ultimaMensagem) {
+            try {
+                await ultimaMensagem.delete();
+            } catch {
+                console.log("Mensagem antiga já foi apagada.");
+            }
+        }
 
 
+        const embed = new EmbedBuilder()
+            .setColor("#00ff88")
+            .setTitle("💰 Nova oportunidade no servidor!")
+            .setDescription(`
+🚀 **Quer juntar uma grana enquanto joga com seus amigos?**
 
-  const canal = await client.channels.fetch("1529331723387801691");
+Tem uma nova oportunidade para todos do servidor!
 
-  const embed = new EmbedBuilder()
-    .setColor("#00ff88")
-    .setTitle("💰 Nova oportunidade no servidor!")
-    .setDescription(`
-🚀 Quer juntar uma grana enquanto se diverte?
+👥 Convide seus amigos e ajude nossa comunidade a crescer.
 
-Agora você pode ajudar o servidor e ainda ganhar uma recompensa!
+💵 **Cada convite válido vale R$0,10**
 
-👥 Cada convite válido:
-💵 **R$ 0,10**
+Chame seus amigos para entrar, jogar e participar do servidor.
 
-Chame seus amigos para participar, jogar junto e fortalecer nossa comunidade.
+Esse dinheiro pode ajudar naquele **AP com a galera**, comprar algo que você queria ou simplesmente guardar uma renda extra. 🔥
 
-📊 Para saber quantas pessoas você convidou:
+📊 Quer saber quantas pessoas você já convidou?
+
+Use:
+
 \`/invites\`
 
-🔥 Quanto mais amigos você trouxer, maior sua recompensa!
-    `);
+⚠️ Apenas convites reais serão contabilizados.
+            `)
+            .setFooter({
+                text: "Obrigado por fortalecer nossa comunidade ❤️"
+            });
 
-  canal.send({
-    content: "@everyone",
-    embeds: [embed],
-    allowedMentions: {
-      parse: ["everyone"]
+
+        ultimaMensagem = await canal.send({
+
+            content: "@everyone",
+
+            embeds: [embed],
+
+            allowedMentions: {
+                parse: ["everyone"]
+            }
+
+        });
+
+
+        console.log("Mensagem diária enviada!");
+
+    } catch(error) {
+
+        console.log("Erro ao enviar mensagem:", error);
+
     }
-  });
 
 });
 
 
-// LOGIN DO BOT
+
 client.login(process.env.TOKEN);
+
