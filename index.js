@@ -29,6 +29,7 @@ client.once("clientReady", () => {
 // Mensagem automática todos os dias às 18:00
 cron.schedule("* * * * *", async () => {
 
+
     try {
 
         const canal = await client.channels.fetch(1529331723387801691);
