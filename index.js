@@ -85,7 +85,7 @@ aqui neste canal e acompanhe seus convites.
             embeds: [embed],
 
             allowedMentions: {
-                parse: ["everyone"]
+                parse: [""]
             }
 
         });
