@@ -80,7 +80,7 @@ aqui neste canal e acompanhe seus convites.
 
         ultimaMensagem = await canal.send({
 
-            content: "@everyone",
+            content: "",
 
             embeds: [embed],
 
